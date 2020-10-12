@@ -36,27 +36,29 @@ function findGoogleHome() {
     });
 }
 
-const say = (host, media) => {
-    const client = new Client();
-    client.connect(host, function () {
-        client.launch(DefaultMediaReceiver, function (err, player) {
-            if (err) {
-                console.log('Error:', err);
-                return;
-            }
-            player.on('status', function (status) {
-                console.log('Status: %s', status.playerState);
-            });
-            player.load(media, { autoplay: true }, function (err, status) {
-                client.close();
+function say(host, media) {
+    return new Promise(function (resolve, reject) {
+        const client = new Client();
+        client.connect(host, function () {
+            client.launch(DefaultMediaReceiver, function (err, player) {
+                if (err) {
+                    reject(err);
+                }
+                player.on('status', function (status) {
+                    console.log('Status: %s', status.playerState);
+                });
+                player.load(media, { autoplay: true }, function (err, status) {
+                    resolve();
+                    client.close();
+                });
             });
         });
+        client.on('error', function (err) {
+            reject(err);
+            client.close();
+        });
     });
-    client.on('error', function (err) {
-        console.log('Error:', err.message);
-        client.close();
-    });
-};
+}
 
 async function main() {
     // parse args
@@ -102,7 +104,10 @@ async function main() {
     console.log(media);
 
     // send the query
-    say(options, media);
+    await say(options, media).catch((err) => {
+        console.error('error: failed to send a request to the Google Home device:', err);
+        process.exit(1);
+    });
 }
 
 main();
