@@ -27,9 +27,11 @@ const say = (host, media) => {
 };
 
 async function main() {
+    // parse args
     program
         .usage('--ip IP [--language LANGUAGE] TEXT...')
         .requiredOption('--ip <IP>', 'IP address to your device')
+        .option('--port <PORT>', 'port for your device')
         .option('--language <LANGUAGE>', 'language for Text-to-Speach (default: en-US)', 'en-US')
         .option('--speed <SPEED>', 'speed for Text-to-Speach (default: 1.0)', parseFloat, 1.0);
     program.parse(process.argv);
@@ -40,14 +42,22 @@ async function main() {
     console.log('Options:', program.opts());
     console.log('Text:', text);
 
+    // build the query
     const url = await googleTTS(text, program.language, program.speed);
     const media = {
         contentId: url,
         contentType: 'audio/mp3',
         streamType: 'BUFFERED',
     };
+    const options = {
+        host: program.ip,
+        port: program.port,
+    };
+    console.log(options);
     console.log(media);
-    say(program.ip, media);
+
+    // send the query
+    say(options, media);
 }
 
 main();
