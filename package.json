@@ -1,0 +1,16 @@
+{
+  "name": "google-home-notifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "castv2-client": "^1.2.0",
+    "google-tts-api": "^0.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kimiyuki Onaka",
+  "license": "ISC"
+}
