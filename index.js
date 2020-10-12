@@ -66,8 +66,8 @@ async function main() {
         .usage('--ip IP [--language LANGUAGE] TEXT...')
         .option('--ip <IP>', 'IP address to your device')
         .option('--port <PORT>', 'port for your device')
-        .option('--language <LANGUAGE>', 'language for Text-to-Speach (default: en-US)', 'en-US')
-        .option('--speed <SPEED>', 'speed for Text-to-Speach (default: 1.0)', parseFloat, 1.0)
+        .option('--language <LANGUAGE>', 'language for Text-to-Speach', 'en-US')
+        .option('--speed <SPEED>', 'speed for Text-to-Speach', parseFloat, 1.0)
         .option('-v, --verbose', 'print debugs logs');
     program.parse(process.argv);
 
