@@ -1,5 +1,8 @@
 # google-home-say
 
+`google-home-say` is a command to say your Google Home something.
+This is a thin wrapper of [thibauts/node-castv2-client](https://github.com/thibauts/node-castv2-client).
+
 ## Install
 
 ```console
