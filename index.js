@@ -1,4 +1,6 @@
+#!/usr/bin/env node
 'use strict';
+
 const Client = require('castv2-client').Client;
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const googleTTS = require('google-tts-api');  // TODO: replace this with the official one. https://github.com/googleapis/nodejs-text-to-speech
