@@ -36,16 +36,16 @@ function findGoogleHome() {
     });
 }
 
-function say(host, media) {
+function say(target, media) {
     return new Promise(function (resolve, reject) {
         const client = new Client();
-        client.connect(host, function () {
+        client.connect(target, function () {
             client.launch(DefaultMediaReceiver, function (err, player) {
                 if (err) {
                     reject(err);
                 }
                 player.on('status', function (status) {
-                    console.log('Status: %s', status.playerState);
+                    console.debug('status:', status);
                 });
                 player.load(media, { autoplay: true }, function (err, status) {
                     resolve();
@@ -67,8 +67,13 @@ async function main() {
         .option('--ip <IP>', 'IP address to your device')
         .option('--port <PORT>', 'port for your device')
         .option('--language <LANGUAGE>', 'language for Text-to-Speach (default: en-US)', 'en-US')
-        .option('--speed <SPEED>', 'speed for Text-to-Speach (default: 1.0)', parseFloat, 1.0);
+        .option('--speed <SPEED>', 'speed for Text-to-Speach (default: 1.0)', parseFloat, 1.0)
+        .option('-v, --verbose', 'print debugs logs');
     program.parse(process.argv);
+
+    if (!program.verbose) {
+        console.debug = function () {};  // nop
+    }
 
     const text = program.args.join(' ').trim();
     if (!text) {
@@ -96,15 +101,15 @@ async function main() {
         contentType: 'audio/mp3',
         streamType: 'BUFFERED',
     };
-    const options = {
+    const target = {
         host: ip,
         port: port,
     };
-    console.log(options);
-    console.log(media);
+    console.debug('target =', target);
+    console.debug('media =', media);
 
     // send the query
-    await say(options, media).catch((err) => {
+    await say(target, media).catch((err) => {
         console.error('error: failed to send a request to the Google Home device:', err);
         process.exit(1);
     });
