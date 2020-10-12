@@ -2,13 +2,14 @@
 const Client = require('castv2-client').Client;
 const DefaultMediaReceiver = require('castv2-client').DefaultMediaReceiver;
 const googleTTS = require('google-tts-api');  // TODO: replace this with the official one. https://github.com/googleapis/nodejs-text-to-speech
+const { program } = require('commander');
 
 const say = (host, media) => {
     const client = new Client();
     client.connect(host, function () {
         client.launch(DefaultMediaReceiver, function (err, player) {
             if (err) {
-                console.log('Error: %s', err);
+                console.log('Error:', err);
                 return;
             }
             player.on('status', function (status) {
@@ -20,25 +21,33 @@ const say = (host, media) => {
         });
     });
     client.on('error', function (err) {
-        console.log('Error: %s', err.message);
+        console.log('Error:', err.message);
         client.close();
     });
 };
 
 async function main() {
-    const ip = '192.168.10.125';
-    const text = 'こんにちは';
-    const language = 'ja-JP';
-    const speed = 1;
+    program
+        .usage('--ip IP [--language LANGUAGE] TEXT...')
+        .requiredOption('--ip <IP>', 'IP address to your device')
+        .option('--language <LANGUAGE>', 'language for Text-to-Speach (default: en-US)', 'en-US')
+        .option('--speed <SPEED>', 'speed for Text-to-Speach (default: 1.0)', parseFloat, 1.0);
+    program.parse(process.argv);
+    if (!program.args) {
+        throw 'TEXT is not given';
+    }
+    const text = program.args.join(' ');
+    console.log('Options:', program.opts());
+    console.log('Text:', text);
 
-    const url = await googleTTS(text, language, speed);
+    const url = await googleTTS(text, program.language, program.speed);
     const media = {
         contentId: url,
         contentType: 'audio/mp3',
         streamType: 'BUFFERED',
     };
     console.log(media);
-    say(ip, media);
+    say(program.ip, media);
 }
 
 main();
