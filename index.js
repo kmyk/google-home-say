@@ -7,6 +7,22 @@ const googleTTS = require('google-tts-api'); // TODO: replace this with the offi
 const {program} = require('commander');
 const multicastdns = require('multicast-dns');
 
+function retry(func, retryCount, retryAfterMillisec) {
+  let promise = func();
+  for (let i = 0; i < retryCount; ++ i) {
+    promise = promise.catch((err) => {
+      console.error(err);
+      console.log('retry...');
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(func());
+        }, retryAfterMillisec);
+      });
+    });
+  }
+  return promise;
+};
+
 function findGoogleHome() {
   return new Promise(function(resolve, reject) {
     setTimeout(function() {
@@ -81,6 +97,7 @@ async function main() {
     process.exit(1);
   }
 
+  // get IP and port of Google Home device
   let ip = program.ip;
   let port = program.port;
   if (ip === undefined) {
@@ -88,14 +105,16 @@ async function main() {
       console.error('error: the option `--port` is specified while the option `--ip` is not specified');
       process.exit(1);
     }
-    [ip, port] = await findGoogleHome().catch((err) => {
+    [ip, port] = await retry(findGoogleHome, 2, 3000).catch((err) => {
       console.error('error: failed to find Google Home devices:', err);
       process.exit(1);
     });
   }
 
   // get URL for TTS
-  const url = await googleTTS(text, program.language, program.speed).catch((err) => {
+  const url = await retry(function() {
+    return googleTTS(text, program.language, program.speed);
+  }, 2, 3000).catch((err) => {
     console.error('error: failed to get a URL for Google Text-to-Speech:', err);
     process.exit(1);
   });
@@ -114,7 +133,9 @@ async function main() {
   console.debug('media =', media);
 
   // send the query
-  await say(target, media).catch((err) => {
+  await retry(function() {
+    return say(target, media);
+  }, 2, 3000).catch((err) => {
     console.error('error: failed to send a request to the Google Home device:', err);
     process.exit(1);
   });
