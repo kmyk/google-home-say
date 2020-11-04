@@ -137,6 +137,9 @@ async function main() {
     return say(target, media);
   }, 2, 3000).catch((err) => {
     console.error('error: failed to send a request to the Google Home device:', err);
+    if (program.ip !== undefined && err.toString().includes('ECONNRESET')) {
+      console.error('hint: You can access to Google Home devices only from the local network of your home (probably, for a security reason). If you use this command from a remote server, you need to use something like a proxy (e.g. reverse SSH tunnels).');
+    }
     process.exit(1);
   });
 }
