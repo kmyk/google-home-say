@@ -63,7 +63,7 @@ function say(target, media) {
 async function main() {
   // parse args
   program
-      .usage('--ip IP [--language LANGUAGE] TEXT...')
+      .usage('[--ip IP] TEXT...')
       .option('--ip <IP>', 'IP address to your device')
       .option('--port <PORT>', 'port for your device')
       .option('--language <LANGUAGE>', 'language for Text-to-Speach', 'en-US')
@@ -94,8 +94,13 @@ async function main() {
     });
   }
 
+  // get URL for TTS
+  const url = await googleTTS(text, program.language, program.speed).catch((err) => {
+    console.error('error: failed to get a URL for Google Text-to-Speech:', err);
+    process.exit(1);
+  });
+
   // build the query
-  const url = await googleTTS(text, program.language, program.speed);
   const media = {
     contentId: url,
     contentType: 'audio/mp3',

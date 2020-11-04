@@ -1,7 +1,9 @@
 # google-home-say
 
 `google-home-say` is a command to say your Google Home something.
-This is a thin wrapper of [thibauts/node-castv2-client](https://github.com/thibauts/node-castv2-client).
+This command does the same thing as [noelportugal/google-home-notifier](https://github.com/noelportugal/google-home-notifier).
+
+This is a thin wrapper of [thibauts/node-castv2-client](https://github.com/thibauts/node-castv2-client), [zlargon/google-tts](https://github.com/zlargon/google-tts), and [mafintosh/multicast-dns](https://github.com/mafintosh/multicast-dns).
 
 ## Install
 
@@ -14,5 +16,5 @@ Node.js and npm is required. In Ubuntu, you can install them with `$ sudo apt in
 ## Usage
 
 ```console
-$ google-home-say --ip $IP hello
+$ google-home-say [--ip IP] TEXT
 ```
