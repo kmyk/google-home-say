@@ -1,7 +1,7 @@
 {
   "name": "google-home-say",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Get Google Home to say something",
   "preferGlobal": true,
   "bin": {
     "google-home-say": "index.js"
@@ -9,7 +9,7 @@
   "dependencies": {
     "castv2-client": "^1.2.0",
     "commander": "^6.1.0",
-    "google-tts-api": "^0.0.4",
+    "google-tts-api": "0.*",
     "multicast-dns": "^7.2.2"
   },
   "optionalDependencies": {},
