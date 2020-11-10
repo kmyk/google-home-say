@@ -18,3 +18,7 @@ Node.js and npm is required. In Ubuntu, you can install them with `$ sudo apt in
 ```console
 $ google-home-say [--ip IP] TEXT
 ```
+
+## Disclaimer
+
+This is an UNOFFICIAL script. This is not produced or endorsed by Google.
