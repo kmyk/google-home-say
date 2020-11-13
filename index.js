@@ -112,9 +112,10 @@ async function main() {
   }
 
   // get URL for TTS
+  console.debug(`Calling googleTTS (retryCount = ${program.ttsRetryCount})`);
   const url = await retry(function() {
     return googleTTS(text, program.language, program.speed);
-  }, 2, 3000).catch((err) => {
+  }, 10, 1000).catch((err) => {
     console.error('error: failed to get a URL for Google Text-to-Speech:', err);
     process.exit(1);
   });
